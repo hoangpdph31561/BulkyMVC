@@ -66,5 +66,30 @@ namespace BulkyWeb.Controllers
             }
             return View(category);
         }
+        public async Task<IActionResult> Delete(int? id)
+        {
+            if (id == null || id == 0)
+            {
+                return NotFound();
+            }
+            Category? category = await _db.Categories.FirstOrDefaultAsync(c => c.Id == id);
+            if (category == null)
+            {
+                return NotFound();
+            }
+            return View(category);
+        }
+        [HttpPost, ActionName("Delete")]
+        public async Task<IActionResult> DeleteConfirmed(int? id)
+        {
+            Category? category = await _db.Categories.FirstOrDefaultAsync(c => c.Id == id);
+            if (category == null)
+            {
+                return NotFound();
+            }
+            _db.Categories.Remove(category);
+            await _db.SaveChangesAsync();
+            return RedirectToAction("Index");
+        }
     }
 }

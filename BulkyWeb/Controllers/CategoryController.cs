@@ -23,9 +23,22 @@ namespace BulkyWeb.Controllers
         [HttpPost]
         public async Task<IActionResult> Create(Category category)
         {
-            await _db.Categories.AddAsync(category);
-            await _db.SaveChangesAsync();
-            return RedirectToAction("Index");
+            //if (category.Name == category.DisplayOrder.ToString())
+            //{
+            //    ModelState.AddModelError("name", "The DisplayOrder cannot exactly match the Name.");
+            //}
+            //if (category.Name != null && category.Name.ToLower() == "test")
+            //{
+            //    ModelState.AddModelError("", "The name cannot be test.");
+            //}
+            if (ModelState.IsValid)
+            {
+                await _db.Categories.AddAsync(category);
+                await _db.SaveChangesAsync();
+                return RedirectToAction("Index");
+            }
+            return View();
+
         }
     }
 }

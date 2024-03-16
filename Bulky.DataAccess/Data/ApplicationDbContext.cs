@@ -25,7 +25,9 @@ namespace Bulky.DataAccess.Data
                     ListPrice = 2.99,
                     Price = 2.99,
                     Price50 = 2.89,
-                    Price100 = 2.79
+                    Price100 = 2.79,
+                    CategoryId = 1,
+                    ImgUrl = ""
                 },
                 new Product
                 {
@@ -37,7 +39,9 @@ namespace Bulky.DataAccess.Data
                     ListPrice = 3.99,
                     Price = 3.99,
                     Price50 = 3.89,
-                    Price100 = 3.79
+                    Price100 = 3.79,
+                    CategoryId = 2,
+                    ImgUrl = ""
                 });
         }
         public DbSet<Category> Categories { get; set; }

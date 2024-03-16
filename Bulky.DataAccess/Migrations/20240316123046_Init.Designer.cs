@@ -8,11 +8,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
-namespace BulkyWeb.Migrations
+namespace Bulky.DataAccess.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240316115704_Product")]
-    partial class Product
+    [Migration("20240316123046_Init")]
+    partial class Init
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -70,6 +70,9 @@ namespace BulkyWeb.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("CategoryId")
+                        .HasColumnType("int");
+
                     b.Property<string>("Description")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -96,6 +99,8 @@ namespace BulkyWeb.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("CategoryId");
+
                     b.ToTable("Products");
 
                     b.HasData(
@@ -103,6 +108,7 @@ namespace BulkyWeb.Migrations
                         {
                             Id = 1,
                             Author = "Coca Cola",
+                            CategoryId = 1,
                             Description = "Coca Cola 1.5L",
                             ISBN = "123456789",
                             ListPrice = 2.9900000000000002,
@@ -115,6 +121,7 @@ namespace BulkyWeb.Migrations
                         {
                             Id = 2,
                             Author = "Pepsi",
+                            CategoryId = 2,
                             Description = "Pepsi 1.5L",
                             ISBN = "987654321",
                             ListPrice = 3.9900000000000002,
@@ -123,6 +130,17 @@ namespace BulkyWeb.Migrations
                             Price50 = 3.8900000000000001,
                             Title = "Pepsi"
                         });
+                });
+
+            modelBuilder.Entity("Bulky.Models.Models.Product", b =>
+                {
+                    b.HasOne("Bulky.Models.Models.Category", "Category")
+                        .WithMany()
+                        .HasForeignKey("CategoryId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Category");
                 });
 #pragma warning restore 612, 618
         }

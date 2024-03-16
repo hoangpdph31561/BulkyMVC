@@ -20,7 +20,7 @@ namespace BulkyWeb.Areas.Admin.Controllers
 
             return View(lstProducts);
         }
-        public IActionResult Create()
+        public IActionResult Upsert(int? id)
         {
             IEnumerable<SelectListItem> CategoryList = _unitOfWork.Category.GetAll().Select(i => new SelectListItem
             {
@@ -34,10 +34,19 @@ namespace BulkyWeb.Areas.Admin.Controllers
                 Product = new Product(),
                 CategoryList = CategoryList
             };
+            if (id == null || id == 0)
+            {
+                return View(productVM);
+            }
+            productVM.Product = _unitOfWork.Product.Get(c => c.Id == id);
+            if (productVM.Product == null)
+            {
+                return NotFound();
+            }
             return View(productVM);
         }
         [HttpPost]
-        public IActionResult Create(ProductVM vm)
+        public IActionResult Upsert(ProductVM vm, IFormFile? file)
         {
             //if (product.Name == product.DisplayOrder.ToString())
             //{
@@ -63,31 +72,6 @@ namespace BulkyWeb.Areas.Admin.Controllers
 
         }
 
-        public IActionResult Edit(int? id)
-        {
-            if (id == null || id == 0)
-            {
-                return NotFound();
-            }
-            Product? Product = _unitOfWork.Product.Get(c => c.Id == id);
-            if (Product == null)
-            {
-                return NotFound();
-            }
-            return View(Product);
-        }
-        [HttpPost]
-        public IActionResult Edit(Product Product)
-        {
-            if (ModelState.IsValid)
-            {
-                _unitOfWork.Product.Update(Product);
-                _unitOfWork.Save();
-                TempData["success"] = "Product updated successfully";
-                return RedirectToAction("Index");
-            }
-            return View(Product);
-        }
         public IActionResult Delete(int? id)
         {
             if (id == null || id == 0)

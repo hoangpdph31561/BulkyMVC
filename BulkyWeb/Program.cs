@@ -1,4 +1,6 @@
 using Bulky.DataAccess.Data;
+using Bulky.DataAccess.Respository;
+using Bulky.DataAccess.Respository.IRespository;
 using Microsoft.EntityFrameworkCore;
 
 namespace BulkyWeb
@@ -13,6 +15,7 @@ namespace BulkyWeb
             builder.Services.AddControllersWithViews();
             builder.Services.AddDbContext<ApplicationDbContext>(options =>
                            options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+            builder.Services.AddScoped<ICategoryRespository, CategoryRespository>();
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.

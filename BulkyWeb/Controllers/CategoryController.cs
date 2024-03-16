@@ -1,21 +1,19 @@
-﻿
-using Bulky.DataAccess.Data;
+﻿using Bulky.DataAccess.Respository.IRespository;
 using Bulky.Models.Models;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace BulkyWeb.Controllers
 {
     public class CategoryController : Controller
     {
-        private readonly ApplicationDbContext _db;
-        public CategoryController(ApplicationDbContext db)
+        private readonly ICategoryRespository _categoryRespository;
+        public CategoryController(ICategoryRespository categoryRespository)
         {
-            _db = db;
+            _categoryRespository = categoryRespository;
         }
         public IActionResult Index()
         {
-            var lstCategories = _db.Categories.ToList();
+            var lstCategories = _categoryRespository.GetAll().ToList();
             return View(lstCategories);
         }
         public IActionResult Create()
@@ -23,7 +21,7 @@ namespace BulkyWeb.Controllers
             return View();
         }
         [HttpPost]
-        public async Task<IActionResult> Create(Category category)
+        public IActionResult Create(Category category)
         {
             //if (category.Name == category.DisplayOrder.ToString())
             //{
@@ -35,8 +33,8 @@ namespace BulkyWeb.Controllers
             //}
             if (ModelState.IsValid)
             {
-                await _db.Categories.AddAsync(category);
-                await _db.SaveChangesAsync();
+                _categoryRespository.Add(category);
+                _categoryRespository.Save();
                 TempData["success"] = "Category created successfully";
                 return RedirectToAction("Index");
             }
@@ -44,13 +42,13 @@ namespace BulkyWeb.Controllers
 
         }
 
-        public async Task<IActionResult> Edit(int? id)
+        public IActionResult Edit(int? id)
         {
             if (id == null || id == 0)
             {
                 return NotFound();
             }
-            Category? category = await _db.Categories.FirstOrDefaultAsync(c => c.Id == id);
+            Category? category = _categoryRespository.Get(c => c.Id == id);
             if (category == null)
             {
                 return NotFound();
@@ -58,24 +56,24 @@ namespace BulkyWeb.Controllers
             return View(category);
         }
         [HttpPost]
-        public async Task<IActionResult> Edit(Category category)
+        public IActionResult Edit(Category category)
         {
             if (ModelState.IsValid)
             {
-                _db.Categories.Update(category);
-                await _db.SaveChangesAsync();
+                _categoryRespository.Update(category);
+                _categoryRespository.Save();
                 TempData["success"] = "Category updated successfully";
                 return RedirectToAction("Index");
             }
             return View(category);
         }
-        public async Task<IActionResult> Delete(int? id)
+        public IActionResult Delete(int? id)
         {
             if (id == null || id == 0)
             {
                 return NotFound();
             }
-            Category? category = await _db.Categories.FirstOrDefaultAsync(c => c.Id == id);
+            Category? category = _categoryRespository.Get(x => x.Id == id);
             if (category == null)
             {
                 return NotFound();
@@ -83,15 +81,15 @@ namespace BulkyWeb.Controllers
             return View(category);
         }
         [HttpPost, ActionName("Delete")]
-        public async Task<IActionResult> DeleteConfirmed(int? id)
+        public IActionResult DeleteConfirmed(int? id)
         {
-            Category? category = await _db.Categories.FirstOrDefaultAsync(c => c.Id == id);
+            Category? category = _categoryRespository.Get(x => x.Id == id);
             if (category == null)
             {
                 return NotFound();
             }
-            _db.Categories.Remove(category);
-            await _db.SaveChangesAsync();
+            _categoryRespository.Remove(category);
+            _categoryRespository.Save();
             TempData["success"] = "Category deleted successfully";
             return RedirectToAction("Index");
         }

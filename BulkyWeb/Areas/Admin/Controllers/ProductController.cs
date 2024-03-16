@@ -19,7 +19,7 @@ namespace BulkyWeb.Areas.Admin.Controllers
         }
         public IActionResult Index()
         {
-            var lstProducts = _unitOfWork.Product.GetAll().ToList();
+            var lstProducts = _unitOfWork.Product.GetAll(includeProperties: "Category").ToList();
 
             return View(lstProducts);
         }

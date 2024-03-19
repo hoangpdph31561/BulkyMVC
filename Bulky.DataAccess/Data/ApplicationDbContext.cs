@@ -47,7 +47,10 @@ namespace Bulky.DataAccess.Data
                     ImgUrl = ""
                 });
         }
+        #region DBset
         public DbSet<Category> Categories { get; set; }
         public DbSet<Product> Products { get; set; }
+        public DbSet<ApplicationUser> ApplicationUsers { get; set; }
+        #endregion
     }
 }
